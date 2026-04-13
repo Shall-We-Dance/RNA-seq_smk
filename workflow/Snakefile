@@ -1,0 +1,28 @@
+import os
+
+configfile: "config.yaml"
+
+SAMPLES = list(config["samples"].keys())
+OUTDIR = config["output"]["dir"]
+KEEP_BAM = bool(config.get("output", {}).get("keep_bam", False))
+
+include: "rules/qc_fastp.smk"
+include: "rules/align_star.smk"
+include: "rules/featurecount.smk"
+include: "rules/ciri3.smk"
+
+rule all:
+    input:
+        # fastp sample-level QC
+        expand(f"{OUTDIR}/qc/fastp/{{sample}}/fastp.html", sample=SAMPLES),
+        expand(f"{OUTDIR}/qc/fastp/{{sample}}/fastp.json", sample=SAMPLES),
+
+        # STAR outputs
+        expand(f"{OUTDIR}/star/{{sample}}/{{sample}}.Log.final.out", sample=SAMPLES),
+        expand(f"{OUTDIR}/star/{{sample}}/{{sample}}.SJ.out.tab", sample=SAMPLES),
+
+        # featureCounts + CIRI3
+        f"{OUTDIR}/featurecount/totalRNA.counts.txt",
+
+        # summary QC
+        f"{OUTDIR}/qc/multiqc/multiqc_report.html"
