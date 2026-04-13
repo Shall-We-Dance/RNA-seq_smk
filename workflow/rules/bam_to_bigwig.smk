@@ -6,8 +6,7 @@ OUTDIR = config["output"]["dir"]
 rule bam_to_bigwig:
     """Generate raw and normalized bigWig coverage tracks from STAR BAM files."""
     input:
-        bam = f"{OUTDIR}/star/{{sample}}/{{sample}}.Aligned.sortedByCoord.out.bam",
-        bai = f"{OUTDIR}/star/{{sample}}/{{sample}}.Aligned.sortedByCoord.out.bam.bai"
+        bam = f"{OUTDIR}/star/{{sample}}/{{sample}}.Aligned.sortedByCoord.out.bam"
     params:
         chrom_sizes = config.get("reference", {}).get(
             "chrom_sizes",
@@ -31,6 +30,11 @@ rule bam_to_bigwig:
         """
         GENOME_SIZE=$(awk '{{sum += $2}} END {{print sum}}' {params.chrom_sizes})
         mkdir -p $(dirname {output.raw_bw})
+
+        # Ensure BAM index exists for bamCoverage.
+        if [ ! -f "{input.bam}.bai" ]; then
+            samtools index -@ {threads} "{input.bam}"
+        fi
 
         EXTRA_BAMCOVERAGE_ARGS=""
         if [ "{params.remove_chrM_and_scaffolds}" = "True" ]; then
