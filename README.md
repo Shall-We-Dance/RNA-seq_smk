@@ -1,6 +1,6 @@
 # RNA-seq Snakemake Analysis Pipeline
 
-This repository provides a reproducible Snakemake workflow for paired-end RNA-seq data. The pipeline merges lane-level FASTQs to sample-level pairs, performs sample-level QC with fastp, aligns reads with STAR, quantifies genes with featureCounts, and exports both raw and normalized bigWig coverage tracks.
+This repository provides a reproducible Snakemake workflow for paired-end RNA-seq data. The pipeline follows a typical Smart-seq2 processing order: merge lane-level FASTQs to sample-level pairs, perform sample-level QC with fastp, align reads with STAR, quantify genes with featureCounts, and export both raw and normalized bigWig coverage tracks.
 
 ## Overview
 
@@ -15,7 +15,6 @@ This repository provides a reproducible Snakemake workflow for paired-end RNA-se
 - **Alignment**
   - `results/star/<sample>/<sample>.Aligned.sortedByCoord.out.bam` (optional, controlled by `output.keep_bam`)
   - `results/star/<sample>/<sample>.Aligned.sortedByCoord.out.bam.bai` (optional, controlled by `output.keep_bam`)
-  - `results/star/<sample>/<sample>.bwa.bam` (optional, controlled by `output.keep_bam`)
 - **Quantification**
   - `results/featurecount/totalRNA.counts.txt`
 - **Signal tracks (bigWig)**
@@ -76,11 +75,10 @@ Key fields:
 
 * `reference.star_index`: prebuilt STAR genome index directory (must already contain index files such as `SA`)
 * `reference.fasta`: reference FASTA
-* `reference.bwa_indexed_fasta`: BWA-indexed FASTA path (BWA sidecar files must already exist with this path as prefix)
 * `reference.gtf`: reference annotation GTF
 * `reference.chrom_sizes`: chromosome sizes file (`.fai`-format 2-column file). If omitted, `<reference.fasta>.fai` is used.
 * `samples`: mapping of sample name to lists of FASTQs for R1 and R2
-* `output.keep_bam`: keep STAR/BWA BAM files (`false` by default to save disk)
+* `output.keep_bam`: keep STAR BAM files (`false` by default to save disk)
 * `bigwig.bin_size`: bigWig bin size
 * `bigwig.normalization`: normalized bigWig method (`RPKM`, `CPM`, `BPM`, etc.)
 * `bigwig.remove_chrM_and_scaffolds`: whether to mask chrM/scaffold-like contigs in bigWig
@@ -91,7 +89,6 @@ Example:
 reference:
   star_index: "/path/to/STAR/index"
   fasta: "/path/to/genome.fa"
-  bwa_indexed_fasta: "/path/to/genome.fa"
   gtf: "/path/to/genes.gtf"
   chrom_sizes: "/path/to/genome.fa.fai"
 
@@ -109,8 +106,6 @@ Notes:
 
 * The workflow assumes paired-end reads and requires both R1 and R2 lists to be the same length per sample.
 * STAR genome index construction is **not** performed in this workflow; build the STAR index in advance and point `reference.star_index` to that directory.
-* BWA index construction is **not** performed in this workflow; provide prebuilt index files for `reference.bwa_indexed_fasta`.
-  Example: `bwa index /path/to/genome.fa`
 * For bigWig generation, ensure chromosome sizes are available (`reference.chrom_sizes` or `<reference.fasta>.fai`).
 
 ## Running the workflow

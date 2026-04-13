@@ -21,7 +21,7 @@ rule all:
         expand(f"{OUTDIR}/star/{{sample}}/{{sample}}.Log.final.out", sample=SAMPLES),
         expand(f"{OUTDIR}/star/{{sample}}/{{sample}}.SJ.out.tab", sample=SAMPLES),
 
-        # featureCounts + CIRI3
+        # featureCounts + bigWig
         f"{OUTDIR}/featurecount/totalRNA.counts.txt",
         expand(f"{OUTDIR}/bigwig/{{sample}}/{{sample}}.normalized.bw", sample=SAMPLES),
 
