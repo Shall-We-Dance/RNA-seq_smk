@@ -12,7 +12,7 @@ rule featurecounts_totalrna:
         "logs/featureCounts.log"
     threads: int(config["threads"].get("featurecounts", config["threads"]["star"]))
     conda:
-        "envs/ciri3.yaml"
+        "envs/featurecounts.yaml"
     params:
         gtf=config["reference"]["gtf"]
     shell:
