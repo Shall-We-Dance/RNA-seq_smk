@@ -7,16 +7,11 @@ threads:
 
 reference:
   # STAR genome index folder (must be prebuilt, e.g. contains SA file)
-  star_index: "resources/genomeIndex/refGen"
-  # Example: GCF_002204515.2.fa
-  fasta: "resources/genomeIndex/GCF_002204515.2.fa"
-  # FASTA path used as BWA index prefix. Must already have:
-  # <bwa_indexed_fasta>.amb/.ann/.bwt/.pac/.sa
-  bwa_indexed_fasta: "resources/genomeIndex/GCF_002204515.2.fa"
-  # Example: GCF_002204515.2_AaegL5.0.ncbiRefSeq.gtf
-  gtf: "resources/genomeIndex/GCF_002204515.2_AaegL5.0.ncbiRefSeq.gtf"
+  star_index: "resources/reference/star_index"
+  fasta: "resources/reference/genome.fa"
+  gtf: "resources/reference/genes.gtf"
   # Chromosome sizes file (2 columns: chrom, size). If omitted, <reference.fasta>.fai is used.
-  chrom_sizes: "resources/genomeIndex/GCF_002204515.2.fa.fai"
+  chrom_sizes: "resources/reference/genome.fa.fai"
 
 samples:
   sampleA:
@@ -41,7 +36,7 @@ fastp:
 
 output:
   dir: "results"
-  # keep STAR/BWA BAM files after pipeline finishes
+  # keep STAR BAM files after pipeline finishes
   keep_bam: false
 
 bigwig:
