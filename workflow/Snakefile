@@ -9,7 +9,7 @@ KEEP_BAM = bool(config.get("output", {}).get("keep_bam", False))
 include: "rules/qc_fastp.smk"
 include: "rules/align_star.smk"
 include: "rules/featurecount.smk"
-include: "rules/ciri3.smk"
+include: "rules/bam_to_bigwig.smk"
 
 rule all:
     input:
@@ -23,6 +23,7 @@ rule all:
 
         # featureCounts + CIRI3
         f"{OUTDIR}/featurecount/totalRNA.counts.txt",
+        expand(f"{OUTDIR}/bigwig/{{sample}}/{{sample}}.normalized.bw", sample=SAMPLES),
 
         # summary QC
         f"{OUTDIR}/qc/multiqc/multiqc_report.html"
