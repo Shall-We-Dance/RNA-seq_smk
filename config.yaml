@@ -3,6 +3,7 @@ threads:
   star: 16
   samtools: 8
   featurecounts: 8
+  deeptools: 8
 
 reference:
   # STAR genome index folder (must be prebuilt, e.g. contains SA file)
@@ -14,6 +15,8 @@ reference:
   bwa_indexed_fasta: "resources/genomeIndex/GCF_002204515.2.fa"
   # Example: GCF_002204515.2_AaegL5.0.ncbiRefSeq.gtf
   gtf: "resources/genomeIndex/GCF_002204515.2_AaegL5.0.ncbiRefSeq.gtf"
+  # Chromosome sizes file (2 columns: chrom, size). If omitted, <reference.fasta>.fai is used.
+  chrom_sizes: "resources/genomeIndex/GCF_002204515.2.fa.fai"
 
 samples:
   sampleA:
@@ -40,3 +43,8 @@ output:
   dir: "results"
   # keep STAR/BWA BAM files after pipeline finishes
   keep_bam: false
+
+bigwig:
+  bin_size: 10
+  normalization: "RPKM"
+  remove_chrM_and_scaffolds: true

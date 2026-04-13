@@ -1,12 +1,18 @@
 # rules/bam_to_bigwig.smk
 
+OUTDIR = config["output"]["dir"]
+
+
 rule bam_to_bigwig:
-    """Generate bigWig coverage tracks from raw BAM files."""
+    """Generate raw and normalized bigWig coverage tracks from STAR BAM files."""
     input:
-        bam = lambda wc: final_bam_path(wc.sample),
-        bai = lambda wc: final_bai_path(wc.sample)
+        bam = f"{OUTDIR}/star/{{sample}}/{{sample}}.Aligned.sortedByCoord.out.bam",
+        bai = f"{OUTDIR}/star/{{sample}}/{{sample}}.Aligned.sortedByCoord.out.bam.bai"
     params:
-        chrom_sizes = config["reference"]["chrom_sizes"],
+        chrom_sizes = config.get("reference", {}).get(
+            "chrom_sizes",
+            config["reference"]["fasta"] + ".fai"
+        ),
         bin_size = config.get("bigwig", {}).get("bin_size", 10),
         normalization = config.get("bigwig", {}).get("normalization", "RPKM"),
         exclude_flags = config.get("samtools_exclude_flags", 1804),
