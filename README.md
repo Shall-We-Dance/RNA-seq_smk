@@ -78,7 +78,7 @@ Key fields:
 * `reference.gtf`: reference annotation GTF
 * `reference.chrom_sizes`: chromosome sizes file (`.fai`-format 2-column file). If omitted, `<reference.fasta>.fai` is used.
 * `samples`: mapping of sample name to lists of FASTQs for R1 and R2
-* `star.quant_mode_gene_counts`: add STAR option `--quantMode GeneCounts` (default `false`)
+* `star.quant_mode_gene_counts`: add STAR option `--quantMode GeneCounts` (default `true`)
 * `output.keep_bam`: keep STAR BAM files (`false` by default to save disk)
 * `bigwig.bin_size`: bigWig bin size
 * `bigwig.normalization`: normalized bigWig method (`RPKM`, `CPM`, `BPM`, etc.)
