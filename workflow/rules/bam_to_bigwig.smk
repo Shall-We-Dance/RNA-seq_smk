@@ -1,6 +1,11 @@
 # rules/bam_to_bigwig.smk
 
 OUTDIR = config["output"]["dir"]
+KEEP_BAM = bool(config.get("output", {}).get("keep_bam", False))
+
+
+def maybe_temp(path):
+    return path if KEEP_BAM else temp(path)
 
 
 rule bam_to_bigwig:
@@ -20,7 +25,8 @@ rule bam_to_bigwig:
         )
     output:
         raw_bw = f"{OUTDIR}/bigwig/{{sample}}/{{sample}}.raw.bw",
-        norm_bw = f"{OUTDIR}/bigwig/{{sample}}/{{sample}}.normalized.bw"
+        norm_bw = f"{OUTDIR}/bigwig/{{sample}}/{{sample}}.normalized.bw",
+        bam_index = maybe_temp(f"{OUTDIR}/star/{{sample}}/{{sample}}.Aligned.sortedByCoord.out.bam.bai")
     log:
         f"logs/bigwig/{{sample}}.bamCoverage.log"
     threads: int(config["threads"]["deeptools"])
@@ -32,9 +38,7 @@ rule bam_to_bigwig:
         mkdir -p $(dirname {output.raw_bw})
 
         # Ensure BAM index exists for bamCoverage.
-        if [ ! -f "{input.bam}.bai" ]; then
-            samtools index -@ {threads} "{input.bam}"
-        fi
+        samtools index -@ {threads} "{input.bam}"
 
         EXTRA_BAMCOVERAGE_ARGS=""
         if [ "{params.remove_chrM_and_scaffolds}" = "True" ]; then
@@ -77,7 +81,9 @@ rule bam_to_bigwig:
             --effectiveGenomeSize $GENOME_SIZE \
             >> {log} 2>&1
 
+
         if [ -n "${{EXCLUDE_BED:-}}" ] && [ -f "$EXCLUDE_BED" ]; then
             rm -f "$EXCLUDE_BED"
         fi
+
         """

@@ -33,6 +33,10 @@ fastp:
   dedup_adapter:
     dedup: true
 
+star:
+  # whether to add STAR argument: --quantMode GeneCounts
+  quant_mode_gene_counts: false
+
 
 output:
   dir: "results"
