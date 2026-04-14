@@ -23,7 +23,8 @@ rule star_align:
     conda:
         "envs/star.yaml"
     params:
-        index=config["reference"]["star_index"]
+        index=config["reference"]["star_index"],
+        quant_mode="--quantMode GeneCounts" if config.get("star", {}).get("quant_mode_gene_counts", False) else ""
     shell:
         r"""
         set -euo pipefail
@@ -36,6 +37,7 @@ rule star_align:
           --readFilesCommand zcat \
           --outFileNamePrefix {OUTDIR}/star/{wildcards.sample}/{wildcards.sample}. \
           --outSAMtype BAM SortedByCoordinate \
+          {params.quant_mode} \
           --outSJfilterOverhangMin 15 12 12 12 \
           --alignSJoverhangMin 15 \
           --alignSJDBoverhangMin 15 \
